@@ -21,7 +21,7 @@ func main(){
 	fmt.Println(green(`
 			[[=>>Usage<<=]]
 
-	[=>>List for PY-STore3 downloaded apps<<=]
+	[=>>List for flatpak downloaded apps<<=]
 
 	WPS Office      com.wps.Office  11.1.0.11719    stable  system
 	Bible   net.lugsole.bible_gui   0.1.4   stable  system
@@ -40,6 +40,7 @@ func main(){
 
 
 func list_exit(){
+	red:=color.New(color.FgRed).SprintFunc()
 	cyan:=color.New(color.FgCyan).SprintFunc()
 	fmt.Println(cyan("\n[0] To exit"))
 	fmt.Println(cyan("[1] To list downloaded PY-STor3 apps\n"))
@@ -58,7 +59,8 @@ func list_exit(){
 	}else if value == "1"{
 		app_list()
 	}else{
-		fmt.Println("Invalid input, enter 0 or 1")
+		fmt.Println(red("Invalid input, enter 0 or 1"))
+		os.Exit(0)
 	}
 }
 
@@ -67,7 +69,7 @@ func banner(){
 	yellow:=color.New(color.FgYellow).SprintFunc()
 	figure:= figure.NewFigure("PY-IC0n","", true)
 	fmt.Println(cyan(figure))
-	fmt.Println(yellow("\n[=[Icon maker for PY-STor3 apps]=]"))
+	fmt.Println(yellow("\n[=[Icon maker for flatpak apps]=]"))
 	fmt.Println(yellow("[=[Created by Genius]=]"))
 	fmt.Println(yellow("[=[https://github.com/Salvatore-droid]=]\n"))
 }
@@ -82,9 +84,11 @@ func asterisk(){
 
 func app_list(){
 	green:=color.New(color.FgGreen).SprintFunc()
-	Red:=color.New(color.FgRed).SprintFunc()
+	blue:=color.New(color.FgBlue).SprintFunc()
+	red:=color.New(color.FgRed).SprintFunc()
 	yellow:=color.New(color.FgYellow).SprintFunc()
-	fmt.Println(yellow("\n[=>>List for PY-STore3 downloaded apps<<=]\n"))
+	fmt.Println(blue("\n[ Enter quit to exit ]\n"))
+	fmt.Println(green("\n[=>>List of flatpak downloaded apps<<=]\n"))
 	list := exec.Command("flatpak", "list", "--app")
 
 	output, err := list.CombinedOutput()
@@ -93,13 +97,13 @@ func app_list(){
 		fmt.Println("Error:", err)
 	}
 	writer:=tabwriter.NewWriter(os.Stdout, 0, 0, 4, ' ',tabwriter.Debug)
-	fmt.Fprintln(writer, Red("Name\tApplication ID\tVersion\tBranch\tInstallation"))
+	fmt.Fprintln(writer, red("Name\tApplication ID\tVersion\tBranch\tInstallation"))
 
 	lines := strings.Split(string(output), "\n")
 
 	for _, line := range lines{
 		if line != ""{
-			fmt.Fprintln(writer, green(line))
+			fmt.Fprintln(writer, yellow(line))
 		}
 	}
 
@@ -107,6 +111,7 @@ func app_list(){
 
 }
 func create_icon(){
+	red:=color.New(color.FgRed).SprintFunc()
 	const CommandTemplate =`echo "[Desktop Entry]
 		Version=1.0
 		Name={{.Name}}
@@ -134,6 +139,11 @@ func create_icon(){
 	}
 
 	name=strings.TrimSuffix(name, "\n")
+
+	if name == "quit"{
+		fmt.Println(red("exiting program..."))
+		os.Exit(0)
+	}
 	
 	fmt.Print("Enter appID of app: ")
 	appID, err := reader.ReadString('\n')
@@ -143,6 +153,12 @@ func create_icon(){
 	}
 
 	appID = strings.TrimSuffix(appID, "\n")
+
+	if appID == "quit"{
+		fmt.Println(red("exiting program..."))
+		os.Exit(0)
+	}
+
 
 	fmt.Print("Enter the path to image(optional, press enter to skip):")
 	path, err :=reader.ReadString('\n')
