@@ -43,7 +43,7 @@ func list_exit(){
 	red:=color.New(color.FgRed).SprintFunc()
 	cyan:=color.New(color.FgCyan).SprintFunc()
 	fmt.Println(cyan("\n[0] To exit"))
-	fmt.Println(cyan("[1] To list downloaded PY-STor3 apps\n"))
+	fmt.Println(cyan("[1] To list downloaded flatpak apps\n"))
 
 	reader := bufio.NewReader(os.Stdin)
 
